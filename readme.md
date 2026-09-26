@@ -4,7 +4,8 @@ This repository hosts the bash script to locally autograde classroom50.
 
 To create the scoring.json file copy the json entry for the assignment in "https://github.com/CSCI4300-Web-Programming/classroom50/blob/main/tester/assignments.json"
 
-Exmaple scoring files has been included
+Exmaple scoring files have been included
+
 
 ```
 TEMPLATE_DIR -> the directory of the template
@@ -21,3 +22,6 @@ To run the script
 chmod +x grade.sh
 bash grade.sh
 ```
+
+# Where to grab the template?
+From CSCI4300 Web Programming group in github 
