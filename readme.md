@@ -1,4 +1,6 @@
-This repository hosts the bash script to grade classroom 50 workflow locally.
+This script is written for Linux/MacOS
+
+This repository hosts the bash script to locally autograde classroom50.
 
 To create the scoring.json file copy the json entry for the assignment in "https://github.com/CSCI4300-Web-Programming/classroom50/blob/main/tester/assignments.json"
 
@@ -14,4 +16,8 @@ ROSTER_DIR -> the directory containing the roster csv files
 KEEP_IN_TEMPLATE -> files/folders kept from the template for every student (the student's copies are ignored)
 ```
 
-
+To run the script
+```
+chmod +x grade.sh
+bash grade.sh
+```
