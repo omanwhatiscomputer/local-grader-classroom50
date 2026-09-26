@@ -23,5 +23,5 @@ chmod +x grade.sh
 bash grade.sh
 ```
 
-# Where to grab the template?
+# Where to find the template?
 From CSCI4300 Web Programming group in github 
