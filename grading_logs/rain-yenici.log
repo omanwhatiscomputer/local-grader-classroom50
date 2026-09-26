@@ -1,0 +1,141 @@
+----- js dom: npm test .tests/01-greeting.test.js -----
+
+> js-DOM@0.0.1 test
+> jest .tests/01-greeting.test.js
+
+PASS .tests/01-greeting.test.js (22.497 s)
+  Part 1: Greeting
+    Greeting functionality
+      ✓ displays "Good Morning!" when AM button is clicked (49 ms)
+      ✓ displays "Good Night!" when PM button is clicked (15 ms)
+      ✓ greeting message changes from AM to PM correctly (11 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        23.272 s
+Ran all test suites matching /.tests\/01-greeting.test.js/i.
+----- js dom color switcher: npm test .tests/02-color-switcher.test.js -----
+
+> js-DOM@0.0.1 test
+> jest .tests/02-color-switcher.test.js
+
+PASS .tests/02-color-switcher.test.js (22.47 s)
+  Part 2: Switch the Background Color
+    Color changing functionality
+      ✓ changes background to red when red button is clicked (46 ms)
+      ✓ changes background to yellow when yellow button is clicked (11 ms)
+      ✓ changes background to green when green button is clicked (12 ms)
+      ✓ changes background to blue when blue button is clicked (8 ms)
+      ✓ div color changes correctly between different colors (9 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        23.262 s
+Ran all test suites matching /.tests\/02-color-switcher.test.js/i.
+----- js dom dynamic list: npm test .tests/03-dynamic-list.test.js -----
+
+> js-DOM@0.0.1 test
+> jest .tests/03-dynamic-list.test.js
+
+  console.error
+    Error: Uncaught [NotFoundError: The node to be removed is not a child of this node.]
+        at reportException (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+        at innerInvokeEventListeners (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+        at invokeEventListeners (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+        at HTMLButtonElementImpl._dispatch (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+        at fireAnEvent (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+        at HTMLButtonElementImpl.click (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/nodes/HTMLElement-impl.js:79:5)
+        at HTMLButtonElement.click (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/generated/HTMLElement.js:108:34)
+        at Object.click (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/.tests/03-dynamic-list.test.js:94:25)
+        at Promise.then.completed (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/utils.js:298:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/utils.js:231:10)
+        at _callCircusTest (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:316:40)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at _runTest (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:252:3)
+        at _runTestsForDescribeBlock (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:126:9)
+        at _runTestsForDescribeBlock (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:121:9)
+        at _runTestsForDescribeBlock (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:121:9)
+        at run (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:71:3)
+        at runAndTransformResultsToJestFormat (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+        at jestAdapter (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+        at runTestInternal (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-runner/build/runTest.js:367:16)
+        at runTest (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-runner/build/runTest.js:444:34) DOMException {}
+
+      92 |
+      93 |       const firstDeleteButton = firstLi.querySelector('button');
+    > 94 |       firstDeleteButton.click();
+         |                         ^
+      95 |
+      96 |       listItems = list.querySelectorAll('li');
+      97 |       expect(listItems.length).toBe(1);
+
+      at VirtualConsole.<anonymous> (node_modules/jsdom/lib/jsdom/virtual-console.js:29:45)
+      at reportException (node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:70:28)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLButtonElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at fireAnEvent (node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+      at HTMLButtonElementImpl.click (node_modules/jsdom/lib/jsdom/living/nodes/HTMLElement-impl.js:79:5)
+      at HTMLButtonElement.click (node_modules/jsdom/lib/jsdom/living/generated/HTMLElement.js:108:34)
+      at Object.click (.tests/03-dynamic-list.test.js:94:25)
+
+  console.error
+    Error: Uncaught [NotFoundError: The node to be removed is not a child of this node.]
+        at reportException (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+        at innerInvokeEventListeners (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+        at invokeEventListeners (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+        at HTMLButtonElementImpl._dispatch (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+        at fireAnEvent (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+        at HTMLButtonElementImpl.click (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/nodes/HTMLElement-impl.js:79:5)
+        at HTMLButtonElement.click (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jsdom/lib/jsdom/living/generated/HTMLElement.js:108:34)
+        at Object.click (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/.tests/03-dynamic-list.test.js:125:26)
+        at Promise.then.completed (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/utils.js:298:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/utils.js:231:10)
+        at _callCircusTest (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:316:40)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at _runTest (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:252:3)
+        at _runTestsForDescribeBlock (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:126:9)
+        at _runTestsForDescribeBlock (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:121:9)
+        at _runTestsForDescribeBlock (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:121:9)
+        at run (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/run.js:71:3)
+        at runAndTransformResultsToJestFormat (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+        at jestAdapter (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+        at runTestInternal (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-runner/build/runTest.js:367:16)
+        at runTest (/mnt/c/Users/mkk51/Downloads/4300WP/js-DOM-template-c50/node_modules/jest-runner/build/runTest.js:444:34) DOMException {}
+
+      123 |       // Delete middle item
+      124 |       const middleDeleteButton = listItems[1].querySelector('button');
+    > 125 |       middleDeleteButton.click();
+          |                          ^
+      126 |
+      127 |       listItems = list.querySelectorAll('li');
+      128 |       expect(listItems.length).toBe(2);
+
+      at VirtualConsole.<anonymous> (node_modules/jsdom/lib/jsdom/virtual-console.js:29:45)
+      at reportException (node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:70:28)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLButtonElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at fireAnEvent (node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+      at HTMLButtonElementImpl.click (node_modules/jsdom/lib/jsdom/living/nodes/HTMLElement-impl.js:79:5)
+      at HTMLButtonElement.click (node_modules/jsdom/lib/jsdom/living/generated/HTMLElement.js:108:34)
+      at Object.click (.tests/03-dynamic-list.test.js:125:26)
+
+PASS .tests/03-dynamic-list.test.js (22.736 s)
+  Part 3: Create a dynamic list
+    List functionality
+      ✓ adds item to list when Add button is clicked with valid input (50 ms)
+      ✓ does not add item to list when input is empty (13 ms)
+      ✓ clears input field after adding item (11 ms)
+      ✓ delete button removes only its own list item (206 ms)
+      ✓ can add multiple items and delete them individually (15 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        23.51 s
+Ran all test suites matching /.tests\/03-dynamic-list.test.js/i.

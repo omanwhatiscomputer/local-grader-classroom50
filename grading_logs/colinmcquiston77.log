@@ -1,0 +1,55 @@
+----- js dom: npm test .tests/01-greeting.test.js -----
+
+> js-DOM@0.0.1 test
+> jest .tests/01-greeting.test.js
+
+PASS .tests/01-greeting.test.js (21.567 s)
+  Part 1: Greeting
+    Greeting functionality
+      ✓ displays "Good Morning!" when AM button is clicked (49 ms)
+      ✓ displays "Good Night!" when PM button is clicked (12 ms)
+      ✓ greeting message changes from AM to PM correctly (14 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        22.357 s
+Ran all test suites matching /.tests\/01-greeting.test.js/i.
+----- js dom color switcher: npm test .tests/02-color-switcher.test.js -----
+
+> js-DOM@0.0.1 test
+> jest .tests/02-color-switcher.test.js
+
+PASS .tests/02-color-switcher.test.js (21.552 s)
+  Part 2: Switch the Background Color
+    Color changing functionality
+      ✓ changes background to red when red button is clicked (51 ms)
+      ✓ changes background to yellow when yellow button is clicked (12 ms)
+      ✓ changes background to green when green button is clicked (13 ms)
+      ✓ changes background to blue when blue button is clicked (11 ms)
+      ✓ div color changes correctly between different colors (13 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        22.344 s
+Ran all test suites matching /.tests\/02-color-switcher.test.js/i.
+----- js dom dynamic list: npm test .tests/03-dynamic-list.test.js -----
+
+> js-DOM@0.0.1 test
+> jest .tests/03-dynamic-list.test.js
+
+PASS .tests/03-dynamic-list.test.js (21.466 s)
+  Part 3: Create a dynamic list
+    List functionality
+      ✓ adds item to list when Add button is clicked with valid input (53 ms)
+      ✓ does not add item to list when input is empty (13 ms)
+      ✓ clears input field after adding item (13 ms)
+      ✓ delete button removes only its own list item (12 ms)
+      ✓ can add multiple items and delete them individually (13 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        22.26 s
+Ran all test suites matching /.tests\/03-dynamic-list.test.js/i.

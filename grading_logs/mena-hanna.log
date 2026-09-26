@@ -1,0 +1,112 @@
+----- css check: npm test .tests/cards.test.js -----
+
+> css-resume-assignment@1.0.0 test
+> jest --verbose .tests/cards.test.js
+
+(node:3292999) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS .tests/cards.test.js (14.718 s)
+  Project Cards
+    ✓ Class 'three-col' should use display grid to create a 3-column layout (-1 point) (8 ms)
+    ✓ Images within cards should be positioned and styled appropriately (-1 point) (1 ms)
+    ✓ Card layout should create a 'card style' with visual separation (-1 point)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        15.56 s, estimated 16 s
+Ran all test suites matching /.tests\/cards.test.js/i.
+----- contact check: npm test .tests/contact.test.js -----
+
+> css-resume-assignment@1.0.0 test
+> jest --verbose .tests/contact.test.js
+
+(node:3293223) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS .tests/contact.test.js (14.762 s)
+  Contact Page
+    ✓ Should add class 'one-col' to tags for form styling (-1 point) (9 ms)
+    ✓ Should style input elements (input, textarea) appropriately (-1 point) (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        15.619 s, estimated 19 s
+Ran all test suites matching /.tests\/contact.test.js/i.
+----- header check: npm test .tests/header.test.js -----
+
+> css-resume-assignment@1.0.0 test
+> jest --verbose .tests/header.test.js
+
+(node:3293334) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS .tests/header.test.js (14.681 s)
+  Header - Splash
+    ✓ Should style the top area of the page to make a 'splash' first impression (-1 point) (7 ms)
+    ✓ H1 should change default style using Google font and color (-1 point) (2 ms)
+    ✓ Headshot image should have border and/or border-radius styling (-1 point)
+    ✓ Address paragraph should use '.address' selector and have custom styling (-.5 point) (3 ms)
+    ✓ Tagline paragraph should use '.tagline' selector and have custom styling (-.5 point) (2 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        15.515 s, estimated 19 s
+Ran all test suites matching /.tests\/header.test.js/i.
+----- nav footer check: npm test .tests/nav-footer.test.js -----
+
+> css-resume-assignment@1.0.0 test
+> jest --verbose .tests/nav-footer.test.js
+
+(node:3293453) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS .tests/nav-footer.test.js (17.69 s)
+  Nav and Footer
+    ✓ Should style nav to differentiate it from the rest of the page - at least 2 properties (-1 point) (8 ms)
+    ✓ Should make nav a flex parent and use flex property to separate name on left and contact link on right (-.5 point) (1 ms)
+    ✓ Should style footer to differentiate it from the rest of the page - at least 2 properties (-1 point)
+    ✓ Should make footer a flex parent and justify the children center (-.5 point) (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        18.545 s, estimated 19 s
+Ran all test suites matching /.tests\/nav-footer.test.js/i.
+----- responsive check: npm test .tests/responsive.test.js -----
+
+> css-resume-assignment@1.0.0 test
+> jest --verbose .tests/responsive.test.js
+
+(node:3293565) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS .tests/responsive.test.js (17.828 s)
+  Responsiveness
+    ✓ Nav should change to vertical orientation in mobile media query (-1 point) (7 ms)
+    ✓ Projects grid should change to one column layout in mobile media query (-1 point)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        18.667 s, estimated 19 s
+Ran all test suites matching /.tests\/responsive.test.js/i.
+----- section check: npm test .tests/section.test.js -----
+
+> css-resume-assignment@1.0.0 test
+> jest --verbose .tests/section.test.js
+
+(node:3293712) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS .tests/section.test.js (17.647 s)
+  Sections, etc.
+    ✓ Section headings h3 should use Google font and color number (-1 point) (8 ms)
+    ✓ Description lists should use grid layout (-1 point) (1 ms)
+    ✓ Unordered lists should have custom styling (-.5 point) (1 ms)
+    ✓ Links should have custom anchor text color (-.5 point)
+    ✓ Links should have no underline (-.5 point) (1 ms)
+    ✓ Links should have custom hover state styling (-.5 point)
+
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        18.489 s
+Ran all test suites matching /.tests\/section.test.js/i.

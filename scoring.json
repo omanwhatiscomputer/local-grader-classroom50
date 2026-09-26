@@ -1,0 +1,42 @@
+{
+      "slug": "js-dom",
+      "name": "JS DOM",
+      "template": {
+        "owner": "CSCI4300-Web-Programming",
+        "repo": "js-DOM-template-c50",
+        "branch": "main"
+      },
+      "mode": "individual",
+      "autograder": "default",
+      "tests": [
+        {
+          "name": "setup",
+          "type": "run",
+          "run": "npm install",
+          "timeout": 120,
+          "points": 0
+        },
+        {
+          "name": "js dom",
+          "type": "run",
+          "run": "npm test .tests/01-greeting.test.js",
+          "timeout": 600,
+          "points": 5
+        },
+        {
+          "name": "js dom color switcher",
+          "type": "run",
+          "run": "npm test .tests/02-color-switcher.test.js",
+          "timeout": 600,
+          "points": 5
+        },
+        {
+          "name": "js dom dynamic list",
+          "type": "run",
+          "run": "npm test .tests/03-dynamic-list.test.js",
+          "timeout": 600,
+          "points": 10
+        }
+      ],
+      "feedback_pr": true
+}

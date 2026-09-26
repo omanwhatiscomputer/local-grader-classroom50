@@ -1,19 +1,27 @@
 #!/usr/bin/env bash
-# Autograder: swaps each student's files into the template, runs the tests
-# from the scoring file, and writes one CSV row of scores per student.
+# Autograder: for each student, replaces the template's contents with the student's
+# repo, runs the tests from the scoring file, and writes one CSV row of scores per student.
 
 # ============================ CONFIG ============================
 # Relative paths are resolved from the folder this script lives in.
-TEMPLATE_DIR="css-cv-template"
-SUBMISSIONS_DIR="Submissions/am-class-css-cv_submissions_2026_09_23_T_22_55_16"
+TEMPLATE_DIR="../js-DOM-template-c50"
+SUBMISSIONS_DIR="../Submissions/pm-class-js-dom_submissions_2026_09_26_T_02_51_16"
 SCORING_FILE="scoring.json"
 OUTPUT_CSV="grades.csv"
 
-# Paths relative to TEMPLATE_DIR (and to each student's repo)
-TEMPLATE_FILES_TO_REPLACE=(
-  "index.html"
-  "contact.html"
-  "css/style.css"
+# AM or PM: picks am-roster.csv or pm-roster.csv from ROSTER_DIR
+CLASS_TIME="PM"
+ROSTER_DIR="roster"
+
+# Kept from the template for every student; the student's copies of these are ignored
+KEEP_IN_TEMPLATE=(
+  "node_modules"
+  ".tests"
+  ".git"
+  "README.md"
+  ".gitignore"
+  "package.json"
+  "package-lock.json"
 )
 
 # Tests to skip (setup is done once up front)
@@ -21,16 +29,29 @@ SKIP_TESTS=("setup")
 # ================================================================
 
 set -uo pipefail
+shopt -s dotglob nullglob
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-TEMPLATE_DIR="$(cd "$TEMPLATE_DIR" && pwd)" || { echo "Template dir not found"; exit 1; }
-SUBMISSIONS_DIR="$(cd "$SUBMISSIONS_DIR" && pwd)" || { echo "Submissions dir not found"; exit 1; }
-[[ -f "$SCORING_FILE" ]] || { echo "Scoring file not found: $SCORING_FILE"; exit 1; }
+TEMPLATE_DIR="$(cd "$TEMPLATE_DIR" && pwd)" || { echo "ERROR: template dir not found"; exit 1; }
+SUBMISSIONS_DIR="$(cd "$SUBMISSIONS_DIR" && pwd)" || { echo "ERROR: submissions dir not found"; exit 1; }
+[[ -f "$SCORING_FILE" ]] || { echo "ERROR: scoring file not found: $SCORING_FILE"; exit 1; }
 OUTPUT_CSV="$(pwd)/$OUTPUT_CSV"
 LOG_DIR="$(pwd)/grading_logs"
-mkdir -p "$LOG_DIR"
+
+# The template gets emptied for every student, so make sure it really is the template
+[[ -d "$TEMPLATE_DIR/.tests" && -f "$TEMPLATE_DIR/package.json" ]] \
+  || { echo "ERROR: $TEMPLATE_DIR doesn't look like the template (no .tests/ or package.json)"; exit 1; }
+case "$SCRIPT_DIR/" in "$TEMPLATE_DIR"/*) echo "ERROR: this script must not live inside the template dir"; exit 1;; esac
+case "$SUBMISSIONS_DIR/" in "$TEMPLATE_DIR"/*) echo "ERROR: submissions dir must not be inside the template dir"; exit 1;; esac
+
+case "${CLASS_TIME^^}" in
+  AM) ROSTER_FILE="$ROSTER_DIR/am-roster.csv" ;;
+  PM) ROSTER_FILE="$ROSTER_DIR/pm-roster.csv" ;;
+  *) echo "ERROR: CLASS_TIME must be AM or PM (got \"$CLASS_TIME\")"; exit 1 ;;
+esac
+[[ -f "$ROSTER_FILE" ]] || { echo "ERROR: roster file not found: $ROSTER_FILE"; exit 1; }
 
 # Repo folders are named "<assignment>-<username>"; the assignment prefix comes
 # from the submissions folder name, e.g. "am-class-css-cv_submissions_..." -> "am-class-css-cv-"
@@ -52,6 +73,7 @@ PARSED_TESTS="$(node -e '
 
 TEST_NAMES=(); TEST_CMDS=(); TEST_TIMEOUTS=(); TEST_POINTS=()
 while IFS=$'\t' read -r name run tmo pts; do
+  [[ -n "$name" ]] || continue
   skip=0
   for s in "${SKIP_TESTS[@]}"; do [[ "$name" == "$s" ]] && skip=1; done
   (( skip )) && continue
@@ -75,46 +97,94 @@ if (( ${#bad_paths[@]} > 0 )); then
   exit 1
 fi
 
-# Every file to replace must exist in the template
-for f in "${TEMPLATE_FILES_TO_REPLACE[@]}"; do
-  [[ -f "$TEMPLATE_DIR/$f" ]] || { echo "ERROR: TEMPLATE_FILES_TO_REPLACE entry not found in template: $f"; exit 1; }
-done
+# ---- Load roster: lowercase username -> "First Last" (teachers excluded) ----
+PARSED_ROSTER="$(node -e '
+  const text = require("fs").readFileSync(process.argv[1], "utf8").replace(/^﻿/, "");
+  // minimal CSV parser (handles quoted fields)
+  const rows = []; let row = [], field = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === "\"") { if (text[i + 1] === "\"") { field += c; i++; } else q = false; } else field += c; }
+    else if (c === "\"") q = true;
+    else if (c === ",") { row.push(field); field = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(field); rows.push(row); row = []; field = ""; }
+    else field += c;
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  const header = rows.shift().map(h => h.trim());
+  const col = n => { const i = header.indexOf(n); if (i < 0) throw new Error("roster has no \"" + n + "\" column"); return i; };
+  const [u, f, l, r] = ["username", "first_name", "last_name", "role"].map(col);
+  for (const x of rows) {
+    if (!x[u] || (x[r] || "").trim().toLowerCase() === "teacher") continue;
+    console.log([x[u].trim(), [x[f], x[l]].map(s => (s || "").trim()).filter(Boolean).join(" ")].join("\t"));
+  }
+' "$ROSTER_FILE")" || { echo "ERROR: failed to parse $ROSTER_FILE"; exit 1; }
 
-# Refuse to start if the template still has a student's files in it (e.g. from a killed run),
+declare -A ROSTER_NAME=() ROSTER_DISPLAY=()
+ROSTER_ORDER=()
+while IFS=$'\t' read -r uname fullname; do
+  [[ -n "$uname" ]] || continue
+  key="${uname,,}"
+  [[ -v ROSTER_NAME[$key] ]] && continue
+  ROSTER_NAME[$key]="$fullname"; ROSTER_DISPLAY[$key]="$uname"; ROSTER_ORDER+=("$key")
+done <<< "$PARSED_ROSTER"
+
+REPOS=("$SUBMISSIONS_DIR/$REPO_PREFIX"*/)
+(( ${#REPOS[@]} > 0 )) || { echo "ERROR: no student repos matching $REPO_PREFIX* in $SUBMISSIONS_DIR"; exit 1; }
+
+# Refuse to start if the template has leftovers from an earlier (killed) run,
 # otherwise they would be backed up as the "original" template files
-if git -C "$TEMPLATE_DIR" rev-parse --git-dir >/dev/null 2>&1 \
-   && ! git -C "$TEMPLATE_DIR" diff --quiet HEAD -- "${TEMPLATE_FILES_TO_REPLACE[@]}"; then
-  echo "ERROR: these template files differ from git HEAD (leftover from an earlier run?):"
-  git -C "$TEMPLATE_DIR" diff --name-only HEAD -- "${TEMPLATE_FILES_TO_REPLACE[@]}" | sed 's/^/  - /'
-  echo "Restore them with: git -C \"$TEMPLATE_DIR\" checkout -- ${TEMPLATE_FILES_TO_REPLACE[*]}"
-  exit 1
+if git -C "$TEMPLATE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+  excludes=(); for k in "${KEEP_IN_TEMPLATE[@]}"; do excludes+=(":(exclude)$k"); done
+  dirty="$(git -C "$TEMPLATE_DIR" status --porcelain -- . "${excludes[@]}")"
+  if [[ -n "$dirty" ]]; then
+    echo "ERROR: the template has changes compared to git (leftover from an earlier run?):"
+    echo "$dirty" | sed 's/^/  /'
+    echo "Restore it with: git -C \"$TEMPLATE_DIR\" checkout -- . && git -C \"$TEMPLATE_DIR\" clean -fd"
+    echo "(check what clean would delete first with: git -C \"$TEMPLATE_DIR\" clean -nd)"
+    exit 1
+  fi
 fi
 
 MAX_SCORE=0
 for p in "${TEST_POINTS[@]}"; do MAX_SCORE=$((MAX_SCORE + p)); done
 
+echo "Class time: ${CLASS_TIME^^} (roster: $ROSTER_FILE, ${#ROSTER_ORDER[@]} students)"
+echo "Submissions: ${#REPOS[@]}"
 echo "Tests:"
 for i in "${!TEST_NAMES[@]}"; do echo "  - ${TEST_NAMES[$i]} (${TEST_POINTS[$i]} pts): ${TEST_CMDS[$i]}"; done
 echo "Max score: $MAX_SCORE"
 echo
 
-# ---- Back up template files; restore them on exit no matter what ----
+is_kept() {
+  local k
+  for k in "${KEEP_IN_TEMPLATE[@]}"; do [[ "$1" == "$k" ]] && return 0; done
+  return 1
+}
+
+# Delete everything in the template except KEEP_IN_TEMPLATE
+clear_template() {
+  local entry
+  for entry in "$TEMPLATE_DIR"/*; do
+    is_kept "$(basename "$entry")" || rm -rf -- "$entry"
+  done
+}
+
+# Copy everything from dir $1 into dir $2 except KEEP_IN_TEMPLATE
+copy_entries() {
+  local entry
+  for entry in "$1"/*; do
+    is_kept "$(basename "$entry")" || cp -R -- "$entry" "$2/" || return 1
+  done
+}
+
+# ---- Back up template contents; restore them on exit no matter what ----
 BACKUP_DIR="$(mktemp -d)"
-for f in "${TEMPLATE_FILES_TO_REPLACE[@]}"; do
-  if [[ -e "$TEMPLATE_DIR/$f" ]]; then
-    mkdir -p "$BACKUP_DIR/$(dirname "$f")"
-    cp "$TEMPLATE_DIR/$f" "$BACKUP_DIR/$f"
-  fi
-done
+copy_entries "$TEMPLATE_DIR" "$BACKUP_DIR" || { echo "ERROR: failed to back up the template"; rm -rf "$BACKUP_DIR"; exit 1; }
 
 restore_template() {
-  for f in "${TEMPLATE_FILES_TO_REPLACE[@]}"; do
-    if [[ -e "$BACKUP_DIR/$f" ]]; then
-      cp "$BACKUP_DIR/$f" "$TEMPLATE_DIR/$f"
-    else
-      rm -f "$TEMPLATE_DIR/$f"
-    fi
-  done
+  clear_template
+  copy_entries "$BACKUP_DIR" "$TEMPLATE_DIR"
 }
 trap 'restore_template; rm -rf "$BACKUP_DIR"' EXIT
 # On Ctrl-C/kill, also stop the running test (timeout runs it in its own process group)
@@ -126,64 +196,72 @@ echo "Installing node packages in $TEMPLATE_DIR ..."
 (cd "$TEMPLATE_DIR" && npm install --no-audit --no-fund) || { echo "npm install failed"; exit 1; }
 echo
 
-# ---- CSV header ----
+mkdir -p "$LOG_DIR"
+
+# ---- CSV ----
 csv_escape() { local s="${1//\"/\"\"}"; printf '"%s"' "$s"; }
 {
-  printf 'username'
+  printf 'username,name'
   for n in "${TEST_NAMES[@]}"; do printf ',%s' "$(csv_escape "$n")"; done
   printf ',total,max_score,notes\n'
 } > "$OUTPUT_CSV"
 
-# ---- Grade each student ----
-for repo in "$SUBMISSIONS_DIR/$REPO_PREFIX"*/; do
-  [[ -d "$repo" ]] || { echo "ERROR: no student repos matching $REPO_PREFIX* in $SUBMISSIONS_DIR"; exit 1; }
+# write_row username name total notes score...
+write_row() {
+  local username="$1" name="$2" total="$3" notes="$4"; shift 4
+  {
+    printf '%s,%s' "$(csv_escape "$username")" "$(csv_escape "$name")"
+    for s in "$@"; do printf ',%s' "$s"; done
+    printf ',%s,%s,%s\n' "$total" "$MAX_SCORE" "$(csv_escape "$notes")"
+  } >> "$OUTPUT_CSV"
+}
+
+# ---- Grade each submission ----
+declare -A SUBMITTED=()
+for repo in "${REPOS[@]}"; do
   repo="${repo%/}"
   repo_name="$(basename "$repo")"
   username="${repo_name#"$REPO_PREFIX"}"
-  echo "=== Grading $username ==="
+  key="${username,,}"
+  SUBMITTED[$key]=1
+  notes=""
+  if [[ -v ROSTER_NAME[$key] ]]; then
+    name="${ROSTER_NAME[$key]}"
+  else
+    name=""; notes="not in roster"
+  fi
+  echo "=== Grading $username${name:+ ($name)} ==="
 
-  restore_template
+  clear_template
+  copy_entries "$repo" "$TEMPLATE_DIR"
 
-  # Check for missing files -> zero
-  missing=()
-  for f in "${TEMPLATE_FILES_TO_REPLACE[@]}"; do
-    [[ -f "$repo/$f" ]] || missing+=("$f")
+  scores=(); total=0
+  student_log="$LOG_DIR/$username.log"
+  : > "$student_log"
+  for i in "${!TEST_NAMES[@]}"; do
+    echo "----- ${TEST_NAMES[$i]}: ${TEST_CMDS[$i]} -----" >> "$student_log"
+    (cd "$TEMPLATE_DIR" && exec timeout -k 10 "${TEST_TIMEOUTS[$i]}" bash -c "${TEST_CMDS[$i]}") >> "$student_log" 2>&1 &
+    TEST_PID=$!
+    if wait "$TEST_PID"; then
+      pts="${TEST_POINTS[$i]}"; result="PASS"
+    else
+      pts=0; result="FAIL"
+    fi
+    TEST_PID=""
+    scores+=("$pts"); total=$((total + pts))
+    printf '  %-20s %s (%s/%s)\n' "${TEST_NAMES[$i]}" "$result" "$pts" "${TEST_POINTS[$i]}"
   done
 
-  scores=(); total=0; notes=""
-  if (( ${#missing[@]} > 0 )); then
-    notes="missing files: ${missing[*]}"
-    echo "  $notes -> score 0"
-    for _ in "${TEST_NAMES[@]}"; do scores+=(0); done
-  else
-    for f in "${TEMPLATE_FILES_TO_REPLACE[@]}"; do
-      mkdir -p "$TEMPLATE_DIR/$(dirname "$f")"
-      cp "$repo/$f" "$TEMPLATE_DIR/$f"
-    done
-
-    student_log="$LOG_DIR/$username.log"
-    : > "$student_log"
-    for i in "${!TEST_NAMES[@]}"; do
-      echo "----- ${TEST_NAMES[$i]}: ${TEST_CMDS[$i]} -----" >> "$student_log"
-      (cd "$TEMPLATE_DIR" && exec timeout -k 10 "${TEST_TIMEOUTS[$i]}" bash -c "${TEST_CMDS[$i]}") >> "$student_log" 2>&1 &
-      TEST_PID=$!
-      if wait "$TEST_PID"; then
-        pts="${TEST_POINTS[$i]}"; result="PASS"
-      else
-        pts=0; result="FAIL"
-      fi
-      TEST_PID=""
-      scores+=("$pts"); total=$((total + pts))
-      printf '  %-20s %s (%s/%s)\n' "${TEST_NAMES[$i]}" "$result" "$pts" "${TEST_POINTS[$i]}"
-    done
-  fi
-
   echo "  Total: $total/$MAX_SCORE"
-  {
-    printf '%s' "$(csv_escape "$username")"
-    for s in "${scores[@]}"; do printf ',%s' "$s"; done
-    printf ',%s,%s,%s\n' "$total" "$MAX_SCORE" "$(csv_escape "$notes")"
-  } >> "$OUTPUT_CSV"
+  write_row "$username" "$name" "$total" "$notes" "${scores[@]}"
+done
+
+# ---- Roster students without a submission get 0 ----
+zeros=(); for _ in "${TEST_NAMES[@]}"; do zeros+=(0); done
+for key in "${ROSTER_ORDER[@]}"; do
+  [[ -v SUBMITTED[$key] ]] && continue
+  echo "=== ${ROSTER_DISPLAY[$key]} (${ROSTER_NAME[$key]}): no submission -> 0 ==="
+  write_row "${ROSTER_DISPLAY[$key]}" "${ROSTER_NAME[$key]}" 0 "no submission" "${zeros[@]}"
 done
 
 echo
